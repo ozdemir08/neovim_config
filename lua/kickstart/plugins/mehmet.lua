@@ -45,7 +45,6 @@ vim.o.mouse = 'a'
 --  See `:help 'clipboard'`
 vim.o.clipboard = 'unnamedplus'
 
-
 -- Enable break indent
 vim.o.breakindent = true
 
