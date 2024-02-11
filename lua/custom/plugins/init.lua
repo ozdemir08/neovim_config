@@ -10,6 +10,15 @@ return {
   'tpope/vim-rhubarb',
   "nvim-tree/nvim-web-devicons",
   'tpope/vim-sleuth',
+  'prisma/vim-prisma',
+  -- Osaka team by devaslife.
+  {
+    "craftzdog/solarized-osaka.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  { 'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons' },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -23,6 +32,24 @@ return {
       vim.keymap.set('n', '<C-n>', ':Neotree filesystem reveal left<CR>', {})
       vim.keymap.set('n', '<leader>bf', ':Neotree buffers reveal float<CR>', {})
     end
+  },
+  {
+    "roobert/tailwindcss-colorizer-cmp.nvim",
+    -- optionally, override the default options:
+    config = function()
+      require("tailwindcss-colorizer-cmp").setup({
+        color_square_width = 2,
+      })
+    end
+  },
+  -- Auto close brackets.
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    opts = {} -- this is equalent to setup({}) function
+  },
+  {
+    'windwp/nvim-ts-autotag',
   },
   {
     'stevearc/aerial.nvim',
@@ -70,7 +97,7 @@ return {
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',    opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -154,7 +181,17 @@ return {
       vim.cmd.colorscheme 'onedark'
     end,
   },
-
+  {
+    -- Refactoring tool. 
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("refactoring").setup()
+    end,
+  },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',

@@ -60,6 +60,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 vim.opt.rtp:prepend(lazypath)
+
+require('kickstart.plugins.mehmet')
 -- [[ Configure plugins ]]
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
@@ -164,6 +166,33 @@ local function telescope_live_grep_open_files()
     prompt_title = 'Live Grep in Open Files',
   }
 end
+
+-- Borderless telescope {https://github.com/nvim-telescope/telescope.nvim/wiki/Gallery#borderless}
+local TelescopePrompt = {
+  TelescopePromptNormal = {
+    bg = '#2d3149',
+  },
+  TelescopePromptBorder = {
+    bg = '#2d3149',
+  },
+  TelescopePromptTitle = {
+    fg = '#2d3149',
+    bg = '#2d3149',
+  },
+  TelescopePreviewTitle = {
+    fg = '#1F2335',
+    bg = '#1F2335',
+  },
+  TelescopeResultsTitle = {
+    fg = '#1F2335',
+    bg = '#1F2335',
+  },
+}
+
+for hl, col in pairs(TelescopePrompt) do
+  vim.api.nvim_set_hl(0, hl, col)
+end
+
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
@@ -181,13 +210,19 @@ vim.api.nvim_set_keymap(
   ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
   { noremap = true }
 )
+
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'java', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'dart' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -247,6 +282,9 @@ vim.defer_fn(function()
         },
       },
     },
+    autotag = {
+      enable = true,
+    }
   }
 end, 0)
 
@@ -295,6 +333,17 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
   nmap('<leader>F', vim.lsp.buf.format, "Format current buffer with LSP")
 end
+
+vim.opt.termguicolors = true
+vim.cmd([[colorscheme solarized-osaka]])
+
+require("bufferline").setup {}
+
+require("cmp").config.formatting = {
+  format = require("tailwindcss-colorizer-cmp").formatter
+}
+
+require('nvim-ts-autotag').setup()
 
 -- document existing key chains
 require('which-key').register {
